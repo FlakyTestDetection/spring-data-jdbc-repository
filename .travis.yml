@@ -7,3 +7,8 @@ before_script:
   - mysql spring_data_jdbc_repository_test < src/test/resources/schema_mysql.sql
   - psql -c 'create database spring_data_jdbc_repository_test;' -U postgres
   - psql spring_data_jdbc_repository_test < src/test/resources/schema_postgresql.sql
+before_install:
+  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+  - unzip -qq apache-maven-3.3.9.zip
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$M2_HOME/bin:$PATH
