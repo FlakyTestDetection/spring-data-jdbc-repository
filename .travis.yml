@@ -1,14 +1,21 @@
-language: java
+before_install:
+- wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+- unzip -qq apache-maven-3.3.9.zip
+- export M2_HOME=$PWD/apache-maven-3.3.9
+- export PATH=$M2_HOME/bin:$PATH
+before_script:
+- mysql -e 'create database spring_data_jdbc_repository_test;'
+- mysql spring_data_jdbc_repository_test < src/test/resources/schema_mysql.sql
+- psql -c 'create database spring_data_jdbc_repository_test;' -U postgres
+- psql spring_data_jdbc_repository_test < src/test/resources/schema_postgresql.sql
 install: mvn install -DskipTests=true -Dgpg.skip=true
 jdk:
-  - oraclejdk7
-before_script:
-  - mysql -e 'create database spring_data_jdbc_repository_test;'
-  - mysql spring_data_jdbc_repository_test < src/test/resources/schema_mysql.sql
-  - psql -c 'create database spring_data_jdbc_repository_test;' -U postgres
-  - psql spring_data_jdbc_repository_test < src/test/resources/schema_postgresql.sql
-before_install:
-  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
-  - unzip -qq apache-maven-3.3.9.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
+- oraclejdk7
+language: java
+notifications:
+  email: false
+  slack:
+    rooms: flakycov:U2MeVOPjdi4up1U793ubeIUZ
+    template:
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}
+    - 'dashbot: %{repository_name} %{build_id}'
